@@ -20,6 +20,7 @@ public class Player {
     
     int hp;
     double armor;
+    int move_speed;
     
     
     Image player_img;
@@ -36,6 +37,8 @@ public class Player {
         stationX = x=Survival.mainFrame.getWidth()/2 - 10;
         stationY = y=Survival.mainFrame.getHeight()/2 - 10;
         
+        move_speed = 8;
+        
     }
     
     
@@ -48,7 +51,14 @@ public class Player {
         return new Rectangle(x,y, player_img.getWidth(null), player_img.getHeight(null));
     }
     
- 
+    public int getRealX()
+    {
+        return Board.boardX+x;
+    }
+    public int getRealY()
+    {
+        return Board.boardY+y;
+    }
     
     
     /****** MOVEMENT FIX ****/

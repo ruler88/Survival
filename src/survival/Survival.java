@@ -71,7 +71,7 @@ public class Survival extends JPanel implements ActionListener {
         mainFrame.setVisible(true);
         
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == christina)

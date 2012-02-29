@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -22,10 +23,9 @@ public class Board extends JPanel implements ActionListener
     int dx, dy;
     static Timer time;
     static Image map;
-    int move_speed = 10;
     
-    Player p1;
-    
+    static Player p1;
+    ArrayList enemyList = new ArrayList();
     
     public Board()
     {
@@ -52,6 +52,8 @@ public class Board extends JPanel implements ActionListener
         
         
         new MapBlock();         //initializes map blocks
+        spawn();
+        
     }
     
     @Override
@@ -59,7 +61,10 @@ public class Board extends JPanel implements ActionListener
     {
         
         moveMap();
-        
+        for(int i=0; i<enemyList.size(); i++)
+        {
+            ((Enemy) enemyList.get(i)).moveEnemy();
+        }
         repaint();
     }
     
@@ -83,7 +88,24 @@ public class Board extends JPanel implements ActionListener
             tempBlock = (Block) MapBlock.allBlocks.get(i);
             g2d.drawImage(tempBlock.getImage(), tempBlock.getX(), tempBlock.getY(), null, null);
         }
+        
+        Enemy tempEnemy;
+        for(int i=0; i<enemyList.size(); i++)
+        {
+            tempEnemy = (Enemy) enemyList.get(i);
+            g2d.drawImage(tempEnemy.getImage(), tempEnemy.getX(), tempEnemy.getY(), null, null);
+        }
     }
+    
+    
+    
+    public void spawn()
+    {
+        enemyList.add(new Ghost(500,500));
+    }
+    
+    
+    
     
     
     public void moveMap()
@@ -176,13 +198,13 @@ public class Board extends JPanel implements ActionListener
             int key = e.getKeyCode();
             //key stroke for p2
             if (key == KeyEvent.VK_LEFT)
-            {  dx = -move_speed;  }
+            {  dx = -p1.move_speed;  }
             if (key == KeyEvent.VK_RIGHT)
-            {  dx = move_speed; }
+            {  dx = p1.move_speed; }
             if (key == KeyEvent.VK_UP)
-            {  dy = -move_speed;  }
+            {  dy = -p1.move_speed;  }
             if (key == KeyEvent.VK_DOWN)
-            {  dy = move_speed;  }
+            {  dy = p1.move_speed;  }
         }
         
         public void keyReleased(KeyEvent e)
