@@ -6,6 +6,7 @@ package survival;
 
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 
 public class Player {
@@ -21,24 +22,32 @@ public class Player {
     int hp;
     double armor;
     int move_speed;
-    
+    int score;
     
     Image player_img;
+    
+    ArrayList shots = new ArrayList();
+    
     
     public Player()
     {
         hp = 100;
-        down = true;    //start at down position
+        score = 0;
+        up = false;
+        down = false;    //start at down position
         left = false;
         right = false;
-        up = false;
-        
+
         //****ADJUST LATER****
         stationX = x=Survival.mainFrame.getWidth()/2 - 10;
         stationY = y=Survival.mainFrame.getHeight()/2 - 10;
         
-        move_speed = 8;
-        
+        move_speed = 10;
+    }
+    
+    public void shoot()
+    {
+        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
     }
     
     
@@ -58,6 +67,16 @@ public class Player {
     public int getRealY()
     {
         return Board.boardY+y;
+    }
+    
+    public int getRealCenterX()
+    {
+        return Board.boardX+x+(player_img.getWidth(null)/2);
+    }
+    
+    public int getRealCenterY()
+    {
+        return Board.boardY+y+(player_img.getHeight(null)/2);
     }
     
     
@@ -110,7 +129,6 @@ public class Player {
             return true;
         }
 
-        
         return false;
     }
     
