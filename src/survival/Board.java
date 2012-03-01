@@ -72,16 +72,75 @@ public class Board extends JPanel implements ActionListener
         timeCounter+=1;
         timeSec = timeCounter / (1000/time.getDelay());
         
-        moveMap();
-        for(int i=0; i<enemyList.size(); i++)
-        {
-            ((Enemy) enemyList.get(i)).moveEnemy();
-        }
-        
+        moveMap();          //moves map and player
+        moveEnemy();
+        moveWeapon();
         spawn();
         repaint();
         
-        System.out.println("up: "+ p1.up + " down: "+ p1.down + " left: " + p1.left + " right: " + p1.right);
+        //System.out.println("up: "+ p1.up + " down: "+ p1.down + " left: " + p1.left + " right: " + p1.right);
+    }
+    
+    public void moveEnemy()
+    {
+        for(int i=0; i<enemyList.size(); i++)
+        {
+            if(((Enemy) enemyList.get(i)).hp<=0)
+            {
+                enemyList.remove(i);
+                p1.score+=1;
+            }
+            else
+            {
+                if(((Enemy) enemyList.get(i)).getBounds().intersects(p1.getBounds()))
+                {
+                    enemyList.remove(i);
+                    p1.hit();
+                }
+                else
+                    ((Enemy) enemyList.get(i)).moveEnemy();
+            }
+        }
+    }
+    
+    public void moveWeapon()
+    {
+        Weapon tempWeapon;
+        //moving the shots
+        for(int i=p1.shots.size()-1; i>=0; i--)
+        {
+            ((Shot) p1.shots.get(i)).move();
+            tempWeapon = (Shot) p1.shots.get(i);
+            
+            if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < 0 ||
+                    tempWeapon.realY > map.getHeight(null) || tempWeapon.realY<0)
+                p1.shots.remove(i); //remove if out of bounds
+            
+            
+            for(int j=enemyList.size()-1; j>=0; j--)
+            {
+                if(tempWeapon.getBounds().intersects(((Enemy)enemyList.get(j)).getBounds()))
+                {
+                    ((Enemy) enemyList.get(j)).hit();
+                    if(((Shot) p1.shots.get(i)).blockable)
+                    {
+                        p1.shots.remove(i);
+                    }
+                }
+            }
+            
+            for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
+            {
+                if(tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
+                {
+                    p1.shots.remove(i);
+                }
+            }
+        }
+        
+        
+        
+        
     }
     
     @Override
@@ -113,13 +172,13 @@ public class Board extends JPanel implements ActionListener
         for(int i=0; i<p1.shots.size(); i++)
         {
             tempShot = (Shot) p1.shots.get(i);
-            
-            g2d.drawImage(tempShot.getImage(), tempShot.af, this);
-            
+            g2d.drawImage(tempShot.getImage(), tempShot.af, null);
         }
     
         
         g2d.drawString("Time: "+ timeSec, 10,10);
+        g2d.drawString("Score: "+ p1.score, 10,20);
+        g2d.drawString("HP: "+ p1.hp, 10,30);
     }
     
     
@@ -146,8 +205,6 @@ public class Board extends JPanel implements ActionListener
             if(rand>7)
                 enemyList.add(new Ghost(3000,10));
                 
-        
-        //enemyList.add(new Ghost(500,500));
         }
     }
     
@@ -163,10 +220,10 @@ public class Board extends JPanel implements ActionListener
             p1.moveXSide(dx-boardX);
             boardX = 0;
         }
-        else if(boardX+dx>(map.getWidth(null) - 1280))
+        else if(boardX+dx>(map.getWidth(null) - Survival.mainFrame.getWidth()))
         {   
-            p1.moveXSide(dx- ((map.getWidth(null) - 1280)-boardX));
-            boardX = (map.getWidth(null) - 1280);
+            p1.moveXSide(dx- ((map.getWidth(null) - Survival.mainFrame.getWidth())-boardX));
+            boardX = (map.getWidth(null) - Survival.mainFrame.getWidth());
         }
         else
         {   
@@ -182,10 +239,10 @@ public class Board extends JPanel implements ActionListener
             p1.moveYSide(dy-boardY);
             boardY = 0;
         }
-        else if(boardY+dy>(map.getHeight(null)-860))
+        else if(boardY+dy>(map.getHeight(null)-Survival.mainFrame.getHeight()))
         {    
-            p1.moveYSide(dy - ((map.getHeight(null)-860)-boardY));
-            boardY = map.getHeight(null)-860;
+            p1.moveYSide(dy - ((map.getHeight(null)-Survival.mainFrame.getHeight())-boardY));
+            boardY = map.getHeight(null)-Survival.mainFrame.getHeight();
         }
         else
         {   

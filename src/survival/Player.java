@@ -20,9 +20,10 @@ public class Player {
     int stationX, stationY;     //stationary x,y coordinates
     
     int hp;
-    double armor;
+    double armor;       //1 for normal, range 0-2
     int move_speed;
     int score;
+    boolean alive;
     
     Image player_img;
     
@@ -37,6 +38,8 @@ public class Player {
         down = false;    //start at down position
         left = false;
         right = false;
+        
+        alive = true;
 
         //****ADJUST LATER****
         stationX = x=Survival.mainFrame.getWidth()/2 - 10;
@@ -50,6 +53,17 @@ public class Player {
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
     }
     
+    public void hit()
+    {
+        if(hp-10/armor > 0)
+            hp -= 10/armor;
+        else
+        {
+            hp = 0;
+            alive = false;
+        }
+    }
+    
     
     public Rectangle getBounds()
     {
@@ -57,6 +71,7 @@ public class Player {
     }
     public Rectangle getBounds(int x, int y)
     {
+        //argument x,y coordinates
         return new Rectangle(x,y, player_img.getWidth(null), player_img.getHeight(null));
     }
     
@@ -105,12 +120,13 @@ public class Player {
         //towards edge         
         if (x+dx < 0)
             x = 0;
-        else if (x+dx >1280-player_img.getWidth(null))
-            x = 1280-player_img.getWidth(null);
+        else if (x+dx >Survival.mainFrame.getWidth()-player_img.getWidth(null))
+            x = Survival.mainFrame.getWidth()-player_img.getWidth(null);
         else
             moveHelper(dx, 0);
-
     }
+    
+    
     
     
     
@@ -170,7 +186,6 @@ public class Player {
                 else if(dy<0)
                 {
                     dy = (tempBlock.getY()+tempBlock.getImage().getHeight(null))-y;
-                    System.out.println(dy);
                 }
                 x+=dx;
                 y+=dy;

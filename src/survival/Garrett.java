@@ -18,6 +18,7 @@ public class Garrett extends Player
         
         ImageIcon i = new ImageIcon(this.getClass().getResource("images/garrett/down.png"));
         player_img = i.getImage();
+        armor = 1.5;
                 
     }
 }

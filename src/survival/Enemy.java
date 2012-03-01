@@ -35,6 +35,7 @@ public class Enemy extends Block
         super(fileName, realX, realY);
         
         //declare left and right image
+        hp=100;
         img_right = img;
         i = new ImageIcon(Survival.class.getResource((fileName.replace("right", "left"))));
         img_left = i.getImage();
@@ -82,10 +83,17 @@ public class Enemy extends Block
             realX+=dx;
             realY+=dy;
         }
-        
     }
     
+    public void hit()
+    {
+        hp -= 100/armor;
+    }
     
+    public Rectangle getBounds()
+    {
+        return new Rectangle(realX-Board.boardX, realY-Board.boardY, img.getWidth(null), img.getHeight(null));
+    }
 
     public Rectangle getBounds(int realX, int realY)
     {

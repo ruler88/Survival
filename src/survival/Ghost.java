@@ -14,5 +14,6 @@ public class Ghost extends Enemy
     {
         super("images/ghost_right.png", x,y);
         move_speed = 2;
+        armor = 1;
     }
 }
