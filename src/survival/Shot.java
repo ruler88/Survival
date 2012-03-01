@@ -23,7 +23,7 @@ public class Shot extends Weapon
     
     public Shot(int realX, int realY, boolean up, boolean down, boolean left, boolean right)
     {
-        super(realX, realY, "images/" + Survival.player_name + "/shot_up.png",
+        super(realX, realY, "images/" + Survival.player_name + "/shot.png",
                 up, down, left, right);
         shot_speed = 10;
         blockable=true;
@@ -32,40 +32,19 @@ public class Shot extends Weapon
         directionAdjust();
     }
     
-    public void directionAdjust()
+    public Shot(int realX, int realY, boolean up, boolean down, boolean left, boolean right, String filename)
     {
+        //for enemy shot
+        super(realX, realY, filename,
+                up, down, left, right);
+        shot_speed = 10;
+        blockable=true;
         
-        af.translate(getX(), getY());
-        //pivot location is img.getWidth(null)/2, img.getHeight(null)
-        if(up)
-        {
-            if(left)
-                af.rotate(Math.toRadians(-45), img.getWidth(null)/2, img.getHeight(null));
-            else if(right)
-                af.rotate(Math.toRadians(45), img.getWidth(null)/2, img.getHeight(null));
-            else
-                af.rotate(Math.toRadians(0), img.getWidth(null)/2, img.getHeight(null));
-        }
-        else if(down)
-        {
-            if(left)
-                af.rotate(Math.toRadians(-135), img.getWidth(null)/2, img.getHeight(null));
-            else if(right)
-                af.rotate(Math.toRadians(135), img.getWidth(null)/2, img.getHeight(null));
-            else
-                af.rotate(Math.toRadians(180), img.getWidth(null)/2, img.getHeight(null));
-        }
-        else
-        {
-            if(left)
-                af.rotate(Math.toRadians(-90), img.getWidth(null)/2, img.getHeight(null));
-            else if(right)
-                af.rotate(Math.toRadians(90), img.getWidth(null)/2, img.getHeight(null));
-            else
-                af.rotate(Math.toRadians(0), img.getWidth(null)/2, img.getHeight(null));
-        }
         
+        directionAdjust();
     }
+    
+    
     
     
     public void move()

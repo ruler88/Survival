@@ -21,6 +21,8 @@ public class Weapon
     boolean left;
     boolean right;
     
+    boolean end;        //check if melee attack has ended
+    
     ImageIcon i;
     Image img;
     
@@ -44,9 +46,52 @@ public class Weapon
         
         this.realX = realX - img.getWidth(null)/2;
         this.realY = realY - img.getHeight(null);
+        
+        end = false;
     }
     
+    public void directionAdjust()
+    {
+        
+        af.setToTranslation(getX(), getY());
+        //pivot location is img.getWidth(null)/2, img.getHeight(null)
+        directionAdjustHelper();
+    }
     
+    public void directionAdjustHelper()
+    {
+        if(up)
+        {
+            if(left)
+                af.rotate(Math.toRadians(-45), img.getWidth(null)/2, img.getHeight(null));
+            else if(right)
+                af.rotate(Math.toRadians(45), img.getWidth(null)/2, img.getHeight(null));
+            else
+                af.rotate(Math.toRadians(0), img.getWidth(null)/2, img.getHeight(null));
+        }
+        else if(down)
+        {
+            if(left)
+                af.rotate(Math.toRadians(-135), img.getWidth(null)/2, img.getHeight(null));
+            else if(right)
+                af.rotate(Math.toRadians(135), img.getWidth(null)/2, img.getHeight(null));
+            else
+                af.rotate(Math.toRadians(180), img.getWidth(null)/2, img.getHeight(null));
+        }
+        else
+        {
+            if(left)
+                af.rotate(Math.toRadians(-90), img.getWidth(null)/2, img.getHeight(null));
+            else if(right)
+                af.rotate(Math.toRadians(90), img.getWidth(null)/2, img.getHeight(null));
+            else
+                af.rotate(Math.toRadians(0), img.getWidth(null)/2, img.getHeight(null));
+        }
+    }
+    
+    public void move()
+    {   //for inheritance implementation
+    }
     
     public Shape getBounds()
     {

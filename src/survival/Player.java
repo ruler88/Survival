@@ -52,6 +52,15 @@ public class Player {
     {
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
     }
+    public void melee()
+    {
+        for(int i = 0; i<shots.size(); i++)
+        {   //make melee object unique
+            if(((Weapon)shots.get(i)) instanceof Melee)
+                return;
+        }
+        shots.add(new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right));
+    }
     
     public void hit()
     {
@@ -92,6 +101,16 @@ public class Player {
     public int getRealCenterY()
     {
         return Board.boardY+y+(player_img.getHeight(null)/2);
+    }
+    
+    public int getRelativeCenterX()
+    {
+        return x+(player_img.getWidth(null)/2);
+    }
+    
+    public int getRelativeCenterY()
+    {
+        return y+(player_img.getHeight(null)/2);
     }
     
     
@@ -190,12 +209,31 @@ public class Player {
                 x+=dx;
                 y+=dy;
                 
+                for(int a=0; a<shots.size(); a++)
+                {
+                    //move melee weapon with player
+                    if(shots.get(a) instanceof Melee)
+                        ((Melee)shots.get(a)).playerMove();
+                }
+                         
+                
                 return;
             }
         }
         
         x+=dx;
         y+=dy;
+        
+        
+        for(int a=0; a<shots.size(); a++)
+        {
+            //move melee weapon with player
+            if(shots.get(a) instanceof Melee)
+                ((Melee)shots.get(a)).playerMove();
+        }
+        
+        
+        
     }
 
     

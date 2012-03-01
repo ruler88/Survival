@@ -30,10 +30,11 @@ public class Board extends JPanel implements ActionListener
     static Image map;
     
     double timeCounter = 0;         
-    double timeSec = 0;             //keeps track of seconds of the game
+    static double timeSec = 0;             //keeps track of seconds of the game
     
     static Player p1;
     ArrayList enemyList = new ArrayList();
+    static ArrayList enemyShots = new ArrayList();        //list of enemy shots
     
     Set pressedDir = new HashSet();
     
@@ -74,7 +75,7 @@ public class Board extends JPanel implements ActionListener
         
         moveMap();          //moves map and player
         moveEnemy();
-        moveWeapon();
+        moveWeapon();       //ally and enemy weapons
         spawn();
         repaint();
         
@@ -109,20 +110,21 @@ public class Board extends JPanel implements ActionListener
         //moving the shots
         for(int i=p1.shots.size()-1; i>=0; i--)
         {
-            ((Shot) p1.shots.get(i)).move();
-            tempWeapon = (Shot) p1.shots.get(i);
+            ((Weapon) p1.shots.get(i)).move();
+            tempWeapon = (Weapon) p1.shots.get(i);
             
-            if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < 0 ||
-                    tempWeapon.realY > map.getHeight(null) || tempWeapon.realY<0)
+            if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < -tempWeapon.img.getWidth(null) ||
+                    tempWeapon.realY > map.getHeight(null) || tempWeapon.realY< -tempWeapon.img.getHeight(null))
                 p1.shots.remove(i); //remove if out of bounds
             
             
             for(int j=enemyList.size()-1; j>=0; j--)
             {
+                //check collision with enemy
                 if(tempWeapon.getBounds().intersects(((Enemy)enemyList.get(j)).getBounds()))
                 {
                     ((Enemy) enemyList.get(j)).hit();
-                    if(((Shot) p1.shots.get(i)).blockable)
+                    if(((Weapon) p1.shots.get(i)).blockable)
                     {
                         p1.shots.remove(i);
                     }
@@ -131,12 +133,45 @@ public class Board extends JPanel implements ActionListener
             
             for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
             {
+                //check collison with map blocks
                 if(tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
                 {
                     p1.shots.remove(i);
                 }
             }
+            
+            if(tempWeapon.end)
+                p1.shots.remove(i);
         }
+        
+        for(int i=enemyShots.size()-1; i>=0; i--)
+        {
+            ((Weapon) enemyShots.get(i)).move();
+            tempWeapon = (Weapon) enemyShots.get(i);
+            if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < -tempWeapon.img.getWidth(null) ||
+                    tempWeapon.realY > map.getHeight(null) || tempWeapon.realY< -tempWeapon.img.getHeight(null))
+                enemyShots.remove(i); //remove if out of bounds
+            
+            
+            for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
+            {
+                //check collison with map blocks
+                if(tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
+                {
+                    enemyShots.remove(i);
+                }
+            }
+            
+            if(tempWeapon.getBounds().intersects(p1.getBounds()))
+            {
+                //check collision with player
+                p1.hit();
+                enemyShots.remove(i);
+            }
+            
+            
+        }
+        
         
         
         
@@ -168,11 +203,18 @@ public class Board extends JPanel implements ActionListener
             g2d.drawImage(tempEnemy.getImage(), tempEnemy.getX(), tempEnemy.getY(), null, null);
         }
         
-        Shot tempShot;
+        Weapon tempWeapon;  //ally weapon
         for(int i=0; i<p1.shots.size(); i++)
         {
-            tempShot = (Shot) p1.shots.get(i);
-            g2d.drawImage(tempShot.getImage(), tempShot.af, null);
+            tempWeapon = (Weapon) p1.shots.get(i);
+            g2d.drawImage(tempWeapon.getImage(), tempWeapon.af, null);
+        }
+        
+        for(int i=enemyShots.size()-1; i>=0; i--)
+        {
+            //enemy weapon
+            tempWeapon = (Weapon) enemyShots.get(i);
+            g2d.drawImage(tempWeapon.getImage(), tempWeapon.af, null);
         }
     
         
@@ -184,26 +226,33 @@ public class Board extends JPanel implements ActionListener
     
     public void spawn()
     {
-        if(timeSec % 5 == 0)
+        if(timeSec % 3 == 0)
         {
             //spawn every 5 sec
-            double rand = Math.random()*10;
+            double rand = Math.random()*(10+timeSec/60);   //increasing difficulty
             
-            //4 spawn points, 70% spawn
+            
             if(rand>7)
                 enemyList.add(new Ghost(0,0));
                 
-            rand = Math.random()*10;
-            if(rand>7)
-                enemyList.add(new Ghost(1000,1000));
+            rand = Math.random()*(10+timeSec/60);
+            if(rand>8)
+                enemyList.add(new Ghost(3000,2250));
             
-            rand = Math.random()*10;
-            if(rand>7)
-                enemyList.add(new Ghost(2000,2000));
+            rand = Math.random()*(10+timeSec/60);
+            if(rand>8)
+                enemyList.add(new Ghost(3000,0));
             
-            rand = Math.random()*10;
-            if(rand>7)
-                enemyList.add(new Ghost(3000,10));
+            rand = Math.random()*(10+timeSec/60);
+            if(rand>8)
+            {
+                enemyList.add(new Ghost(0,2250));
+                enemyList.add(new Ghost(2000,0));
+            }
+            
+            rand = Math.random()*(10+timeSec/60);
+            if(rand>0)
+                enemyList.add(new Squirrel(1000,1000));
                 
         }
     }
@@ -305,6 +354,11 @@ public class Board extends JPanel implements ActionListener
             if (key == KeyEvent.VK_X)
             {
                 p1.shoot();
+                return;
+            }
+            if (key == KeyEvent.VK_Z)
+            {
+                p1.melee();
                 return;
             }
             

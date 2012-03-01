@@ -18,6 +18,10 @@ public class Enemy extends Block
     double armor;
     int hp;
     
+    double range;     //attack range
+    double attackDelay;        //attack delay for ranged enemy, in seconds
+    double lastShot;       //sec of last shot
+    
     int move_speed;
     
     Image img_left;
@@ -39,6 +43,9 @@ public class Enemy extends Block
         img_right = img;
         i = new ImageIcon(Survival.class.getResource((fileName.replace("right", "left"))));
         img_left = i.getImage();
+        range = 0;     //default 0
+        attackDelay = 0;
+        lastShot = 0;
     }
     
     
@@ -85,6 +92,23 @@ public class Enemy extends Block
         }
     }
     
+    public void rangeAttack()
+    {
+        if(lastShot == 0 || (Board.timeSec-lastShot)%attackDelay == 0)
+        {
+            lastShot = Board.timeSec;
+            boolean up = Board.p1.getRealY()-realY < 0;
+            boolean down = Board.p1.getRealY()-realY > 0;
+            boolean left = Board.p1.getRealX()-realX < 0;     
+            boolean right = Board.p1.getRealX()-realX > 0;
+
+            Board.enemyShots.add(new Shot(realX, realY, up, down, left, right, 
+                    "images/squirrel_shot.png"));
+        }
+        
+        
+    }
+    
     public void hit()
     {
         hp -= 100/armor;
@@ -98,6 +122,18 @@ public class Enemy extends Block
     public Rectangle getBounds(int realX, int realY)
     {
         return new Rectangle(realX-Board.boardX, realY-Board.boardY, img.getWidth(null), img.getHeight(null));
+    }
+    
+    public double getEnemyDistance()
+    {
+        //make variables into double
+        double realx = this.realX;
+        double realy = this.realY;
+        double playerx = Board.p1.getRealX();
+        double playery = Board.p1.getRealY();
+        
+        return Math.sqrt((realx-playerx)*(realx-playerx) + (realy-playery)*(realy-playery));
+
     }
     
     
