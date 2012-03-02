@@ -8,24 +8,23 @@ package survival;
  *
  * @author kchao
  */
-public class Squirrel extends Enemy
+public class Cactuar extends Enemy
 {
-    public Squirrel(int x, int y)
+    public Cactuar(int x, int y)
     {
-        super("images/squirrel_right.png", x,y);
-        move_speed = 4;
-        armor = 1;
-        range = 350;
-        attackDelay = 3;
+        super("images/cactuar_right.png", x,y);
+        move_speed = 7;
+        armor = 2;
+        range = 420;
+        attackDelay = 2;
     }
-    
     
     public void moveEnemy()
     {
         //for ranged enemy
         if(getEnemyDistance() <= range)
         {
-            rangeAttack("images/squirrel_shot.png");
+            rangeAttack("images/cactuar_shot.png");
         }
         else
         {

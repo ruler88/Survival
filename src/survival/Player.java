@@ -28,6 +28,8 @@ public class Player {
     Image player_img;
     
     ArrayList shots = new ArrayList();
+    double attackDelay;
+    double lastShot = 0;       //sec of last shot
     
     
     public Player()
@@ -45,12 +47,16 @@ public class Player {
         stationX = x=Survival.mainFrame.getWidth()/2 - 10;
         stationY = y=Survival.mainFrame.getHeight()/2 - 10;
         
-        move_speed = 10;
+        move_speed = 8;
     }
     
     public void shoot()
     {
-        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+        if(Board.timeSec-lastShot >= attackDelay || attackDelay ==0)
+        {
+            shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+            lastShot = Board.timeSec;
+        }
     }
     public void melee()
     {

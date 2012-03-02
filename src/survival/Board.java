@@ -4,10 +4,7 @@
  */
 package survival;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -33,10 +30,12 @@ public class Board extends JPanel implements ActionListener
     static double timeSec = 0;             //keeps track of seconds of the game
     
     static Player p1;
-    ArrayList enemyList = new ArrayList();
     static ArrayList enemyShots = new ArrayList();        //list of enemy shots
+    ArrayList enemyList = new ArrayList();
+    ArrayList hpPot = new ArrayList();      //stores hp boxes throughout the map
     
     Set pressedDir = new HashSet();
+    Font font = new Font("SanSerif", Font.BOLD, 24);
     
     public Board()
     {
@@ -70,16 +69,61 @@ public class Board extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        timeCounter+=1;
-        timeSec = timeCounter / (1000/time.getDelay());
-        
-        moveMap();          //moves map and player
-        moveEnemy();
-        moveWeapon();       //ally and enemy weapons
-        spawn();
-        repaint();
+        if(p1.alive)
+        {
+            timeCounter+=1;
+            timeSec = timeCounter / (1000/time.getDelay());
+
+            moveMap();          //moves map and player
+            moveEnemy();        //move enemy and collision detection
+            moveWeapon();       //ally and enemy weapons
+            itemDetection();    //see if collect items
+            spawn();            //spawn enemy
+            spawnItems();       //spawn items
+            repaint();
+        }
+        else
+        {
+            repaint();
+            time.stop();
+        }
         
         //System.out.println("up: "+ p1.up + " down: "+ p1.down + " left: " + p1.left + " right: " + p1.right);
+    }
+    
+    public void spawnItems()
+    {
+        //make sure its not existing
+        if(timeSec%30==0)
+        {   //chance of spawn every 30 secs
+            if(hpPot.size()==0)
+            {
+                double rand = Math.random()*100;
+                if(rand>=50)
+                    hpPot.add(new HPPot(500,500));  //change spawn points
+                
+                rand = Math.random()*100;
+                if(rand>=50)
+                    hpPot.add(new HPPot(2000,2000));
+            }
+        }
+    }
+    
+    public void itemDetection()
+    {
+        HPPot tempPot;
+        for(int i=hpPot.size()-1; i>=0; i--)
+        {//heal player if captures hp pot
+            tempPot = (HPPot) hpPot.get(i);
+            if(tempPot.getBounds().intersects(p1.getBounds()))
+            {
+                if(p1.hp+tempPot.healValue >=100)
+                    p1.hp=100;
+                else
+                    p1.hp+=tempPot.healValue;
+                hpPot.remove(i);
+            }
+        }
     }
     
     public void moveEnemy()
@@ -108,6 +152,7 @@ public class Board extends JPanel implements ActionListener
     {
         Weapon tempWeapon;
         //moving the shots
+        //ally weapons
         for(int i=p1.shots.size()-1; i>=0; i--)
         {
             ((Weapon) p1.shots.get(i)).move();
@@ -144,6 +189,8 @@ public class Board extends JPanel implements ActionListener
                 p1.shots.remove(i);
         }
         
+        
+        //enemy weapon
         for(int i=enemyShots.size()-1; i>=0; i--)
         {
             ((Weapon) enemyShots.get(i)).move();
@@ -172,10 +219,6 @@ public class Board extends JPanel implements ActionListener
             
         }
         
-        
-        
-        
-        
     }
     
     @Override
@@ -191,36 +234,65 @@ public class Board extends JPanel implements ActionListener
         
         Block tempBlock;
         for(int i=0; i<MapBlock.allBlocks.size(); i++)
-        {
+        {//map blocks
             tempBlock = (Block) MapBlock.allBlocks.get(i);
             g2d.drawImage(tempBlock.getImage(), tempBlock.getX(), tempBlock.getY(), null, null);
         }
         
+        HPPot tempPot;
+        for(int i=hpPot.size()-1; i>=0; i--)
+        {//pot item
+            tempPot = (HPPot) hpPot.get(i);
+            g2d.drawImage(tempPot.getImage(), tempPot.getX(), tempPot.getY(), null, null);
+        }
+        
         Enemy tempEnemy;
         for(int i=0; i<enemyList.size(); i++)
-        {
+        {//enemy
             tempEnemy = (Enemy) enemyList.get(i);
             g2d.drawImage(tempEnemy.getImage(), tempEnemy.getX(), tempEnemy.getY(), null, null);
         }
         
-        Weapon tempWeapon;  //ally weapon
+        Weapon tempWeapon;  
         for(int i=0; i<p1.shots.size(); i++)
-        {
+        {//ally weapon
             tempWeapon = (Weapon) p1.shots.get(i);
             g2d.drawImage(tempWeapon.getImage(), tempWeapon.af, null);
         }
         
         for(int i=enemyShots.size()-1; i>=0; i--)
-        {
-            //enemy weapon
+        {//enemy weapon
             tempWeapon = (Weapon) enemyShots.get(i);
             g2d.drawImage(tempWeapon.getImage(), tempWeapon.af, null);
         }
-    
         
-        g2d.drawString("Time: "+ timeSec, 10,10);
-        g2d.drawString("Score: "+ p1.score, 10,20);
-        g2d.drawString("HP: "+ p1.hp, 10,30);
+        
+        //hp
+        g2d.setColor(Color.red);
+        g2d.fillRect(1100,15,p1.hp, 25);
+        g2d.setColor(Color.black);
+        g2d.setFont(font);
+        g2d.drawString("HP ", 1100-38, 37);
+        g2d.drawString(p1.hp+"", 1131, 37);
+        //shot meter
+        g2d.setColor(Color.blue);
+        int skillMeter = ((int)(timeSec*100/p1.attackDelay) - (int)(p1.lastShot*100/p1.attackDelay))>=100 ? 
+                100 : ((int)(timeSec*100/p1.attackDelay) - (int)(p1.lastShot*100/p1.attackDelay));
+        g2d.fillRect(1100,45,skillMeter, 25);
+        g2d.setColor(Color.black);
+        g2d.drawString("Skill ", 1100-54, 66);
+        //score
+        g2d.setColor(Color.GRAY);
+        g2d.drawString("Score: " + p1.score, 600, 37);
+        //death message
+        if(!p1.alive)
+        {
+            g2d.setColor(Color.red);
+            g2d.setFont(new Font("SanSerif", Font.BOLD, 50));
+            g2d.drawString("YOU FAIL", 550,400);
+        }
+        
+        
     }
     
     
@@ -250,11 +322,16 @@ public class Board extends JPanel implements ActionListener
                 enemyList.add(new Ghost(2000,0));
             }
             
+            
             rand = Math.random()*(10+timeSec/60);
             if(rand>0)
+            {
                 enemyList.add(new Squirrel(1000,1000));
-                
+                enemyList.add(new Cactuar(2000,2000));
+            }
+
         }
+
     }
     
     
@@ -371,7 +448,6 @@ public class Board extends JPanel implements ActionListener
             Iterator ite = pressedDir.iterator();
             while(ite.hasNext())
                 keyPressedHelper( (Integer) ite.next());
-                      
             
         }
         

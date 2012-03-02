@@ -92,7 +92,7 @@ public class Enemy extends Block
         }
     }
     
-    public void rangeAttack()
+    public void rangeAttack(String fileName)
     {
         if(lastShot == 0 || (Board.timeSec-lastShot)%attackDelay == 0)
         {
@@ -103,7 +103,7 @@ public class Enemy extends Block
             boolean right = Board.p1.getRealX()-realX > 0;
 
             Board.enemyShots.add(new Shot(realX, realY, up, down, left, right, 
-                    "images/squirrel_shot.png"));
+                    fileName));
         }
         
         
@@ -132,7 +132,11 @@ public class Enemy extends Block
         double playerx = Board.p1.getRealX();
         double playery = Board.p1.getRealY();
         
-        return Math.sqrt((realx-playerx)*(realx-playerx) + (realy-playery)*(realy-playery));
+        //fix this!        
+        double xdistance = Math.min((playerx - (realx + img.getWidth(null))), (realx-(playerx+Board.p1.player_img.getWidth(null))));
+        double ydistance = Math.min((playery - (realy + img.getHeight(null))), (realy-(playery+Board.p1.player_img.getHeight(null))));
+        
+        return Math.sqrt(xdistance*xdistance + ydistance*ydistance);
 
     }
     

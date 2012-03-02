@@ -20,13 +20,13 @@ public class Shot extends Weapon
 {
     int shot_speed;
     
-    
     public Shot(int realX, int realY, boolean up, boolean down, boolean left, boolean right)
     {
         super(realX, realY, "images/" + Survival.player_name + "/shot.png",
                 up, down, left, right);
         shot_speed = 10;
         blockable=true;
+        
         
         
         directionAdjust();
