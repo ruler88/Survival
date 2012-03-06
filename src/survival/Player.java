@@ -7,6 +7,7 @@ package survival;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 
 public class Player {
@@ -26,10 +27,16 @@ public class Player {
     boolean alive;
     
     Image player_img;
+    Image up_img;
+    Image down_img;
+    Image left_img;
+    Image right_img;
     
     ArrayList shots = new ArrayList();
     double attackDelay;
     double lastShot = 0;       //sec of last shot
+    int special = 0;         //special skill meter
+    int specialMax = 2;
     
     
     public Player()
@@ -37,17 +44,46 @@ public class Player {
         hp = 100;
         score = 0;
         up = false;
-        down = false;    //start at down position
+        down = true;    //start at down position
         left = false;
         right = false;
         
         alive = true;
-
+        
+        collectImage();
+        
         //****ADJUST LATER****
         stationX = x=Survival.mainFrame.getWidth()/2 - 10;
         stationY = y=Survival.mainFrame.getHeight()/2 - 10;
         
         move_speed = 8;
+    }
+    
+    public void collectImage()
+    {
+        ImageIcon i = new ImageIcon(this.getClass().getResource("images/"+ Survival.player_name + "/down.png"));
+        player_img = i.getImage();
+        down_img = i.getImage();
+        
+        i = new ImageIcon(this.getClass().getResource("images/"+ Survival.player_name + "/up.png"));
+        up_img = i.getImage();
+        i = new ImageIcon(this.getClass().getResource("images/"+ Survival.player_name + "/left.png"));
+        left_img = i.getImage();
+        i = new ImageIcon(this.getClass().getResource("images/"+ Survival.player_name + "/right.png"));
+        right_img = i.getImage();
+        
+    }
+    
+    public void imgRefresh()
+    {
+        if(up)
+            player_img = up_img;
+        else if(down)
+            player_img = down_img;
+        if(left)
+            player_img = left_img;
+        else if(right)
+            player_img = right_img;
     }
     
     public void shoot()
@@ -58,6 +94,63 @@ public class Player {
             lastShot = Board.timeSec;
         }
     }
+    
+    public void specialAttack()
+    {   //for implementation
+    }
+    
+    public void triRangeShotHelper()
+    {   //shoots three shots
+        boolean tempUp = up;
+        boolean tempDown = down;
+        boolean tempLeft = left;
+        boolean tempRight = right;
+
+        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+
+        //shift clockwise
+        up = (tempLeft || (tempUp && !tempLeft && !tempRight)) ? true : false;
+        right = (tempUp || (tempRight && !tempUp && !tempDown)) ? true : false;
+        down = (tempRight || (tempDown && !tempRight && !tempLeft)) ? true : false;
+        left = (tempDown || (tempLeft && !tempDown && !tempUp)) ? true : false;
+        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+
+        //shift counterclockwise
+        up = (tempRight || (tempUp && !tempLeft && !tempRight)) ? true : false;
+        right = (tempDown || (tempRight && !tempUp && !tempDown)) ? true : false;
+        down = (tempLeft || (tempDown && !tempRight && !tempLeft)) ? true : false;
+        left = (tempUp || (tempLeft && !tempDown && !tempUp)) ? true : false;
+        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+
+        up = tempUp;
+        down = tempDown;
+        left = tempLeft;
+        right = tempRight;
+    }
+    
+    public void halfRangeShotHelper()
+    {   //shoots 5 shots
+        triRangeShotHelper();
+        
+        boolean tempUp = up;
+        boolean tempDown = down;
+        boolean tempLeft = left;
+        boolean tempRight = right;
+        
+        //90 degree movement
+        up = tempLeft; right = tempUp; down = tempRight; left = tempDown;
+        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+        
+        //-90 degree movement
+        up = tempRight; right = tempDown; down = tempLeft; left = tempUp;
+        shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
+        
+        up = tempUp;
+        down = tempDown;
+        left = tempLeft;
+        right = tempRight;
+    }
+    
     public void melee()
     {
         for(int i = 0; i<shots.size(); i++)
@@ -77,6 +170,8 @@ public class Player {
             hp = 0;
             alive = false;
         }
+        if(special+1<=specialMax)
+            special +=1;
     }
     
     

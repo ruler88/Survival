@@ -50,12 +50,21 @@ public class Weapon
         end = false;
     }
     
+    
     public void directionAdjust()
     {
-        
         af.setToTranslation(getX(), getY());
         //pivot location is img.getWidth(null)/2, img.getHeight(null)
         directionAdjustHelper();
+    }
+    
+    public void directionAdjustScale(double xscale, double yscale)
+    {
+        af.setToTranslation(getX()+img.getWidth(null)/2-img.getWidth(null)*xscale/2, getY()+img.getHeight(null)-img.getHeight(null)*yscale);
+        af.scale(xscale, yscale);
+        
+        directionAdjustHelper();
+        
     }
     
     public void directionAdjustHelper()

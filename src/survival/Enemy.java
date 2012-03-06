@@ -105,8 +105,41 @@ public class Enemy extends Block
             Board.enemyShots.add(new Shot(realX, realY, up, down, left, right, 
                     fileName));
         }
-        
-        
+    }
+    public void rangeFullAttack(String fileName)
+    {
+        if(lastShot == 0 || (Board.timeSec-lastShot)%attackDelay == 0)
+        {
+            lastShot = Board.timeSec;
+            boolean up = Board.p1.getRealY()-realY < 0;
+            boolean down = Board.p1.getRealY()-realY > 0;
+            boolean left = Board.p1.getRealX()-realX < 0;     
+            boolean right = Board.p1.getRealX()-realX > 0;
+
+            Board.enemyShots.add(new Shot(realX, realY, up, down, left, right, 
+                    fileName));
+            
+            boolean tempUp = up;
+            boolean tempDown = down;
+            boolean tempLeft = left;
+            boolean tempRight = right;
+            
+            //shift clockwise
+            up = tempLeft; right = tempUp; down = tempRight; left = tempDown;
+            Board.enemyShots.add(new Shot(realX, realY, up, down, left, right, 
+                    fileName));
+            
+            //shift counterclockwise
+            up = tempRight; right = tempDown; down = tempLeft; left = tempUp;
+            Board.enemyShots.add(new Shot(realX, realY, up, down, left, right, 
+                    fileName));
+            
+            up = tempUp;
+            down = tempDown;
+            left = tempLeft;
+            right = tempRight;
+            
+        }
     }
     
     public void hit()

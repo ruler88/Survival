@@ -24,7 +24,7 @@ public class Cactuar extends Enemy
         //for ranged enemy
         if(getEnemyDistance() <= range)
         {
-            rangeAttack("images/cactuar_shot.png");
+            rangeFullAttack("images/cactuar_shot.png");
         }
         else
         {

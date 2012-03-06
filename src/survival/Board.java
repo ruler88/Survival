@@ -10,10 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -33,6 +36,8 @@ public class Board extends JPanel implements ActionListener
     static ArrayList enemyShots = new ArrayList();        //list of enemy shots
     ArrayList enemyList = new ArrayList();
     ArrayList hpPot = new ArrayList();      //stores hp boxes throughout the map
+    static int level = 3;                  //level up point
+    static int level2 = 5;                  //2nd level up point 
     
     Set pressedDir = new HashSet();
     Font font = new Font("SanSerif", Font.BOLD, 24);
@@ -48,7 +53,7 @@ public class Board extends JPanel implements ActionListener
         setFocusable(true);
         addKeyListener(new ActionListenerClass());
         
-        time = new Timer(10, this);   //updates image every 5 ms
+        time = new Timer(10, this);   //updates image every 10 ms
         time.start();
         
         if(Survival.player_name == "garrett")
@@ -80,6 +85,8 @@ public class Board extends JPanel implements ActionListener
             itemDetection();    //see if collect items
             spawn();            //spawn enemy
             spawnItems();       //spawn items
+            
+            p1.imgRefresh();    //refreshes player image
             repaint();
         }
         else
@@ -88,7 +95,6 @@ public class Board extends JPanel implements ActionListener
             time.stop();
         }
         
-        //System.out.println("up: "+ p1.up + " down: "+ p1.down + " left: " + p1.left + " right: " + p1.right);
     }
     
     public void spawnItems()
@@ -161,32 +167,46 @@ public class Board extends JPanel implements ActionListener
             if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < -tempWeapon.img.getWidth(null) ||
                     tempWeapon.realY > map.getHeight(null) || tempWeapon.realY< -tempWeapon.img.getHeight(null))
                 p1.shots.remove(i); //remove if out of bounds
-            
-            
-            for(int j=enemyList.size()-1; j>=0; j--)
+            else
             {
-                //check collision with enemy
-                if(tempWeapon.getBounds().intersects(((Enemy)enemyList.get(j)).getBounds()))
+            
+                for(int j=enemyList.size()-1; j>=0; j--)
                 {
-                    ((Enemy) enemyList.get(j)).hit();
-                    if(((Weapon) p1.shots.get(i)).blockable)
+                    //check collision with enemy
+                    if(tempWeapon.getBounds().intersects(((Enemy)enemyList.get(j)).getBounds()))
+                    {
+                        ((Enemy) enemyList.get(j)).hit();
+                        if( p1.shots.size()>0 && ((Weapon) p1.shots.get(i)).blockable)
+                        {
+                            p1.shots.remove(i);
+                        }
+                    }
+                }
+
+                for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
+                {
+                    //check collison with map blocks
+                    if(p1.shots.size()>0 && tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
                     {
                         p1.shots.remove(i);
                     }
                 }
-            }
-            
-            for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
-            {
-                //check collison with map blocks
-                if(tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
+
+                for(int l=enemyShots.size()-1; l>=0; l--)
                 {
-                    p1.shots.remove(i);
+                    //detect weapon collision
+                    Weapon tempWeapon2 = (Weapon) enemyShots.get(l);
+                    Rectangle2D rect = tempWeapon2.getBounds().getBounds2D();
+                    if(tempWeapon.getBounds().intersects(rect))
+                    {
+                        enemyShots.remove(l);
+                    }
+
                 }
+
+                if(tempWeapon.end)
+                    p1.shots.remove(i);
             }
-            
-            if(tempWeapon.end)
-                p1.shots.remove(i);
         }
         
         
@@ -198,22 +218,24 @@ public class Board extends JPanel implements ActionListener
             if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < -tempWeapon.img.getWidth(null) ||
                     tempWeapon.realY > map.getHeight(null) || tempWeapon.realY< -tempWeapon.img.getHeight(null))
                 enemyShots.remove(i); //remove if out of bounds
-            
-            
-            for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
+            else
             {
-                //check collison with map blocks
-                if(tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
+                
+                for(int k=MapBlock.allBlocks.size()-1; k>=0; k--)
                 {
+                    //check collison with map blocks
+                    if(tempWeapon.blockable && tempWeapon.getBounds().intersects(((Block) MapBlock.allBlocks.get(k)).getBounds()))
+                    {
+                        enemyShots.remove(i);
+                    }
+                }
+
+                if(tempWeapon.getBounds().intersects(p1.getBounds()))
+                {
+                    //check collision with player
+                    p1.hit();
                     enemyShots.remove(i);
                 }
-            }
-            
-            if(tempWeapon.getBounds().intersects(p1.getBounds()))
-            {
-                //check collision with player
-                p1.hit();
-                enemyShots.remove(i);
             }
             
             
@@ -281,6 +303,11 @@ public class Board extends JPanel implements ActionListener
         g2d.fillRect(1100,45,skillMeter, 25);
         g2d.setColor(Color.black);
         g2d.drawString("Skill ", 1100-54, 66);
+        //special skill meter
+        g2d.setColor(Color.green);
+        g2d.fillRect(1100,75, p1.special*100/p1.specialMax, 25);
+        g2d.setColor(Color.black);
+        g2d.drawString("Special ", 1100-88, 95);
         //score
         g2d.setColor(Color.GRAY);
         g2d.drawString("Score: " + p1.score, 600, 37);
@@ -290,6 +317,10 @@ public class Board extends JPanel implements ActionListener
             g2d.setColor(Color.red);
             g2d.setFont(new Font("SanSerif", Font.BOLD, 50));
             g2d.drawString("YOU FAIL", 550,400);
+        }
+        else if(p1.score==level || p1.score==level2)
+        {  
+            g2d.drawString("Level Up", 550,400);
         }
         
         
@@ -333,9 +364,6 @@ public class Board extends JPanel implements ActionListener
         }
 
     }
-    
-    
-    
     
     
     public void moveMap()
@@ -416,9 +444,6 @@ public class Board extends JPanel implements ActionListener
     }
     
     
-    
-    
-    
     private class ActionListenerClass extends KeyAdapter
     {
         
@@ -426,7 +451,7 @@ public class Board extends JPanel implements ActionListener
         public void keyPressed(KeyEvent e)
         {
             int key = e.getKeyCode();
-            //key stroke for p2
+            //key stroke for p1
             
             if (key == KeyEvent.VK_X)
             {
@@ -436,6 +461,11 @@ public class Board extends JPanel implements ActionListener
             if (key == KeyEvent.VK_Z)
             {
                 p1.melee();
+                return;
+            }
+            if(key == KeyEvent.VK_C)
+            {
+                p1.specialAttack();
                 return;
             }
             
