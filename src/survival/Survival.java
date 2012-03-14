@@ -41,13 +41,13 @@ public class Survival extends JPanel implements ActionListener {
         stephen = new JButton("Stephen the Elven Warior of Justice", 
                 new ImageIcon(this.getClass().getResource(("images/stephen/button.png"))));
         garrett = new JButton("Garrett the Rogue Barbarian", 
-                new ImageIcon(this.getClass().getResource(("images/garrett/button.png"))));
+                new ImageIcon(this.getClass().getResource(("images/garrett/down.png"))));
         kai = new JButton("Kai the Troll", 
                 new ImageIcon(this.getClass().getResource(("images/kai/button.png"))));
         
         choiceFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
         //choiceFrame.getContentPane().add(christina);
-        //choiceFrame.getContentPane().add(stephen);
+        choiceFrame.getContentPane().add(stephen);
         choiceFrame.getContentPane().add(garrett);
         //choiceFrame.getContentPane().add(kai);
         

@@ -18,8 +18,6 @@ public class Garrett extends Player
         
         armor = 1.5;
         attackDelay = 1;
-        
-                
     }
     
     
@@ -104,7 +102,5 @@ public class Garrett extends Player
                 end = true;
             }
         }
-        
-        
     }
 }

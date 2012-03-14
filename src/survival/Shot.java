@@ -27,7 +27,15 @@ public class Shot extends Weapon
         shot_speed = 10;
         blockable=true;
         
-        
+        directionAdjust();
+    }
+    
+    public Shot(int realX, int realY, boolean up, boolean down, boolean left, boolean right, int shot_speed)
+    {
+        super(realX, realY, "images/" + Survival.player_name + "/shot.png",
+                up, down, left, right);
+        this.shot_speed = shot_speed;
+        blockable=true;
         
         directionAdjust();
     }
@@ -37,9 +45,19 @@ public class Shot extends Weapon
         //for enemy shot
         super(realX, realY, filename,
                 up, down, left, right);
-        shot_speed = 10;
+        shot_speed = 11;
         blockable=true;
         
+        directionAdjust();
+    }
+    
+    public Shot(int realX, int realY, boolean up, boolean down, boolean left, boolean right, String filename, boolean blockable)
+    {
+        //manually set blockable
+        super(realX, realY, "images/" + Survival.player_name + "/" + filename,
+                up, down, left, right);
+        shot_speed = 11;
+        this.blockable = blockable;
         
         directionAdjust();
     }

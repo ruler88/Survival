@@ -29,7 +29,7 @@ public class Melee extends Weapon
         meleeAdjust();
     }
     
-    public Melee(int realX, int realY, boolean up, boolean down, boolean left, boolean right, int finalRotation)
+    public Melee(int realX, int realY, boolean up, boolean down, boolean left, boolean right, int finalRotation, int rotationSpeed)
     {
         super(realX, realY, "images/" + Survival.player_name + "/melee.png",
                 up, down, left, right);
@@ -37,9 +37,23 @@ public class Melee extends Weapon
         blockable=false;
         this.finalRotation = finalRotation;
         currentRotation = 0;
-        rotationSpeed = 10;
+        this.rotationSpeed = rotationSpeed;
         
         directionAdjust();
+        meleeAdjust();
+    }
+    
+    public Melee(int realX, int realY, boolean up, boolean down, boolean left, boolean right, int finalRotation, int rotationSpeed, double xscale, double yscale)
+    {
+        super(realX, realY, "images/" + Survival.player_name + "/melee.png",
+                up, down, left, right);
+        
+        blockable=false;
+        this.finalRotation = finalRotation;
+        currentRotation = 0;
+        this.rotationSpeed = rotationSpeed;
+        
+        directionAdjustScale(xscale, yscale);
         meleeAdjust();
     }
     
@@ -56,7 +70,21 @@ public class Melee extends Weapon
         
         directionAdjustScale(xscale, yscale);
         meleeAdjust();
+    }
+    
+    
+    public Melee(int realX, int realY, boolean up, boolean down, boolean left, boolean right, String filename)
+    {
+        super(realX, realY, "images/" + Survival.player_name + "/" + filename,
+                up, down, left, right);
         
+        blockable=false;
+        finalRotation = 180;
+        currentRotation = 0;
+        rotationSpeed = 12;
+        
+        directionAdjust();
+        meleeAdjust();
     }
     
     public void meleeAdjust()

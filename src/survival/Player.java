@@ -316,7 +316,6 @@ public class Player {
                     if(shots.get(a) instanceof Melee)
                         ((Melee)shots.get(a)).playerMove();
                 }
-                         
                 
                 return;
             }

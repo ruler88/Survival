@@ -106,11 +106,11 @@ public class Board extends JPanel implements ActionListener
             {
                 double rand = Math.random()*100;
                 if(rand>=50)
-                    hpPot.add(new HPPot(500,500));  //change spawn points
+                    hpPot.add(new HPPot(818, 1087));  //change spawn points
                 
                 rand = Math.random()*100;
                 if(rand>=50)
-                    hpPot.add(new HPPot(2000,2000));
+                    hpPot.add(new HPPot(2238,1087));
             }
         }
     }
