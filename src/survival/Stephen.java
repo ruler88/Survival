@@ -100,21 +100,21 @@ public class Stephen extends Player
             //adjust photo direction
             directionAdjust();
             //do shoot attack here
-            if(Board.timeSec - startTime <= 5)
+            if(Board.timeSec - startTime <= 6)
             {
                 if(Board.timeSec - lastShot >= attackDelay)
                 {
                     lastShot = Board.timeSec;
                     //full set
-                    shots.add(new Shot(realX, realY, true, false, false, false, noteFile(), false));
-                    shots.add(new Shot(realX, realY, false, true, false, false, noteFile(), false));
-                    shots.add(new Shot(realX, realY, false, false, true, false, noteFile(), false));
-                    shots.add(new Shot(realX, realY, false, false, false, true, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, true, false, false, false, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, false, true, false, false, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, false, false, true, false, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, false, false, false, true, noteFile(), false));
 
-                    shots.add(new Shot(realX, realY, true, false, true, false, noteFile(), false));
-                    shots.add(new Shot(realX, realY, true, false, false, true, noteFile(), false));
-                    shots.add(new Shot(realX, realY, false, true, true, false, noteFile(), false));
-                    shots.add(new Shot(realX, realY, false, true, false, true, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, true, false, true, false, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, true, false, false, true, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, false, true, true, false, noteFile(), false));
+                    shots.add(new Shot(realX+15, realY+120, false, true, false, true, noteFile(), false));
                 }
             }
             
@@ -157,17 +157,17 @@ public class Stephen extends Player
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right, shot_speed));
 
         //shift clockwise
-        up = (tempLeft || (tempUp && !tempLeft && !tempRight)) ? true : false;
-        right = (tempUp || (tempRight && !tempUp && !tempDown)) ? true : false;
-        down = (tempRight || (tempDown && !tempRight && !tempLeft)) ? true : false;
-        left = (tempDown || (tempLeft && !tempDown && !tempUp)) ? true : false;
+        up = ((tempLeft && !tempDown) || (tempUp && !tempLeft && !tempRight)) ? true : false;
+        right = ((tempUp && !tempLeft) || (tempRight && !tempUp && !tempDown)) ? true : false;
+        down = ((tempRight && !tempUp) || (tempDown && !tempRight && !tempLeft)) ? true : false;
+        left = ((tempDown && !tempRight) || (tempLeft && !tempDown && !tempUp)) ? true : false;
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right, shot_speed));
 
         //shift counterclockwise
-        up = (tempRight || (tempUp && !tempLeft && !tempRight)) ? true : false;
-        right = (tempDown || (tempRight && !tempUp && !tempDown)) ? true : false;
-        down = (tempLeft || (tempDown && !tempRight && !tempLeft)) ? true : false;
-        left = (tempUp || (tempLeft && !tempDown && !tempUp)) ? true : false;
+        up = ((tempRight && !tempDown) || (tempUp && !tempLeft && !tempRight)) ? true : false;
+        right = ((tempDown && !tempLeft) || (tempRight && !tempUp && !tempDown)) ? true : false;
+        down = ((tempLeft && !tempUp) || (tempDown && !tempRight && !tempLeft)) ? true : false;
+        left = ((tempUp && !tempRight) || (tempLeft && !tempDown && !tempUp)) ? true : false;
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right, shot_speed));
 
         up = tempUp;

@@ -109,17 +109,17 @@ public class Player {
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
 
         //shift clockwise
-        up = (tempLeft || (tempUp && !tempLeft && !tempRight)) ? true : false;
-        right = (tempUp || (tempRight && !tempUp && !tempDown)) ? true : false;
-        down = (tempRight || (tempDown && !tempRight && !tempLeft)) ? true : false;
-        left = (tempDown || (tempLeft && !tempDown && !tempUp)) ? true : false;
+        up = ((tempLeft && !tempDown) || (tempUp && !tempLeft && !tempRight)) ? true : false;
+        right = ((tempUp && !tempLeft) || (tempRight && !tempUp && !tempDown)) ? true : false;
+        down = ((tempRight && !tempUp) || (tempDown && !tempRight && !tempLeft)) ? true : false;
+        left = ((tempDown && !tempRight) || (tempLeft && !tempDown && !tempUp)) ? true : false;
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
 
         //shift counterclockwise
-        up = (tempRight || (tempUp && !tempLeft && !tempRight)) ? true : false;
-        right = (tempDown || (tempRight && !tempUp && !tempDown)) ? true : false;
-        down = (tempLeft || (tempDown && !tempRight && !tempLeft)) ? true : false;
-        left = (tempUp || (tempLeft && !tempDown && !tempUp)) ? true : false;
+        up = ((tempRight && !tempDown) || (tempUp && !tempLeft && !tempRight)) ? true : false;
+        right = ((tempDown && !tempLeft) || (tempRight && !tempUp && !tempDown)) ? true : false;
+        down = ((tempLeft && !tempUp) || (tempDown && !tempRight && !tempLeft)) ? true : false;
+        left = ((tempUp && !tempRight) || (tempLeft && !tempDown && !tempUp)) ? true : false;
         shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
 
         up = tempUp;

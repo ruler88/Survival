@@ -68,13 +68,14 @@ public class Garrett extends Player
             if(((Weapon)shots.get(i)) instanceof Melee)
                 return;
         }
+        System.out.println("WOOT");
         Melee tempMelee;
         if(score < Board.level)
             tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right);
         else if(score < Board.level2)
             tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 1.5, 1.5);
         else
-            tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 2, 2);
+            tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 2.0, 2.0);
         
         shots.add(tempMelee);
     }
