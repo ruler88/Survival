@@ -166,7 +166,9 @@ public class Board extends JPanel implements ActionListener
             
             if(tempWeapon.realX > map.getWidth(null) || tempWeapon.realX < -tempWeapon.img.getWidth(null) ||
                     tempWeapon.realY > map.getHeight(null) || tempWeapon.realY< -tempWeapon.img.getHeight(null))
+            {
                 p1.shots.remove(i); //remove if out of bounds
+            }
             else
             {
             
@@ -453,16 +455,18 @@ public class Board extends JPanel implements ActionListener
             int key = e.getKeyCode();
             //key stroke for p1
             
-            if (key == KeyEvent.VK_X)
-            {
-                p1.shoot();
-                return;
-            }
             if (key == KeyEvent.VK_Z)
             {
                 p1.melee();
                 return;
             }
+            
+            if (key == KeyEvent.VK_X)
+            {
+                p1.shoot();
+                return;
+            }
+            
             if(key == KeyEvent.VK_C)
             {
                 p1.specialAttack();
@@ -487,12 +491,12 @@ public class Board extends JPanel implements ActionListener
             if (key == KeyEvent.VK_UP)
             {  
                 p1.up = true;
-                dy = -p1.move_speed; 
+                dy = -p1.move_speed;
             }
             if (key == KeyEvent.VK_DOWN)
             { 
                 p1.down = true;
-                dy = p1.move_speed; 
+                dy = p1.move_speed;
             }
             if (key == KeyEvent.VK_LEFT)
             {

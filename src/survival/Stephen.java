@@ -4,6 +4,8 @@
  */
 package survival;
 
+import javax.sound.sampled.Clip;
+
 /**
  *
  * @author kchao
@@ -38,6 +40,8 @@ public class Stephen extends Player
         else
             tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 90, 5, 2, 2);
         
+        clipZ.setFramePosition(0);
+        clipZ.loop(0);
         shots.add(tempMelee);
     }
     
@@ -46,6 +50,9 @@ public class Stephen extends Player
     {
         if(Board.timeSec-lastShot >= attackDelay || attackDelay ==0)
         {
+            clipX.setFramePosition(0);
+            clipX.loop(0);
+            
             if(score < Board.level)
             {
                 shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right, shot_speed));
@@ -70,6 +77,11 @@ public class Stephen extends Player
         int dist = 250;     //distance from center
         shots.add(new SpecialWeapon(this.getRealCenterX()+dist, this.getRealCenterY()+dist, 
                 up, down, left, right));
+        if (clipC.isRunning())
+            clipC.stop();
+        Survival.clip.stop();
+        clipC.setFramePosition(0);
+        clipC.loop(0);
         
     }
     
@@ -121,6 +133,7 @@ public class Stephen extends Player
             else
             {
                 end = true;
+                Survival.clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
         }
         

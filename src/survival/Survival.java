@@ -5,6 +5,8 @@ package survival;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import javax.sound.sampled.*;
 import javax.swing.*;
 
 
@@ -20,14 +22,24 @@ public class Survival extends JPanel implements ActionListener {
     
     public static String player_name;       //choosen player, accessible by all classes
     
+    String background_file = "sounds/background.wav";
     
-    public static void main(String[] args) {
+    static Clip clip;
+            
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         new Survival();
+        
     }
     
-    public Survival()
+    public Survival() throws UnsupportedAudioFileException, IOException, LineUnavailableException
     {
         choiceScreen();
+        
+        //background music
+        AudioInputStream background = AudioSystem.getAudioInputStream(this.getClass().getResource(background_file));
+        clip = AudioSystem.getClip();
+        clip.open(background);
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     
     public void choiceScreen()
@@ -46,7 +58,7 @@ public class Survival extends JPanel implements ActionListener {
                 new ImageIcon(this.getClass().getResource(("images/kai/button.png"))));
         
         choiceFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
-        //choiceFrame.getContentPane().add(christina);
+        choiceFrame.getContentPane().add(christina);
         choiceFrame.getContentPane().add(stephen);
         choiceFrame.getContentPane().add(garrett);
         //choiceFrame.getContentPane().add(kai);

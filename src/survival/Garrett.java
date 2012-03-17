@@ -4,6 +4,7 @@
  */
 package survival;
 
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 
 /**
@@ -26,6 +27,8 @@ public class Garrett extends Player
     {
         if(Board.timeSec-lastShot >= attackDelay || attackDelay ==0)
         {
+            clipX.setFramePosition(0);
+            clipX.loop(0);
             if(score < Board.level)
             {
                 shots.add(new Shot(getRealCenterX(), getRealCenterY(), up, down, left, right));
@@ -46,6 +49,12 @@ public class Garrett extends Player
     
     public void specialAttack()
     {   
+        if (clipC.isRunning())
+            clipC.stop();
+        
+        Survival.clip.stop();
+        clipC.setFramePosition(0);
+        clipC.loop(2);
         int dist = 250;     //distance from center
         shots.add(new SpecialWeapon(this.getRealCenterX()+dist, this.getRealCenterY()+dist, 
                 up, down, left, right));
@@ -68,7 +77,9 @@ public class Garrett extends Player
             if(((Weapon)shots.get(i)) instanceof Melee)
                 return;
         }
-        System.out.println("WOOT");
+        
+        clipZ.setFramePosition(0);
+        clipZ.loop(0);
         Melee tempMelee;
         if(score < Board.level)
             tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right);
@@ -101,6 +112,7 @@ public class Garrett extends Player
             else
             {
                 end = true;
+                Survival.clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
         }
     }

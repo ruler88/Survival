@@ -6,7 +6,12 @@ package survival;
 
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.*;
 import javax.swing.ImageIcon;
 
 
@@ -38,6 +43,14 @@ public class Player {
     int special = 0;         //special skill meter
     int specialMax = 2;
     
+    AudioInputStream audioZ;
+    AudioInputStream audioX;
+    AudioInputStream audioC;
+    Clip clipZ;
+    Clip clipX;
+    Clip clipC;
+    
+    
     
     public Player()
     {
@@ -51,12 +64,40 @@ public class Player {
         alive = true;
         
         collectImage();
+        try {
+            collectSound();
+        } catch (UnsupportedAudioFileException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         //****ADJUST LATER****
         stationX = x=Survival.mainFrame.getWidth()/2 - 10;
         stationY = y=Survival.mainFrame.getHeight()/2 - 10;
         
         move_speed = 8;
+    }
+    
+    public void collectSound() throws UnsupportedAudioFileException, IOException, LineUnavailableException
+    {
+        String tempString;
+        tempString = "sounds/"+Survival.player_name+"/z.wav";
+        audioZ = AudioSystem.getAudioInputStream(this.getClass().getResource(tempString));
+        clipZ = AudioSystem.getClip();
+        clipZ.open(audioZ);
+        
+        tempString = "sounds/"+Survival.player_name+"/x.wav";
+        audioX = AudioSystem.getAudioInputStream(this.getClass().getResource(tempString));
+        clipX = AudioSystem.getClip();
+        clipX.open(audioX);
+        
+        tempString = "sounds/"+Survival.player_name+"/c.wav";
+        audioC = AudioSystem.getAudioInputStream(this.getClass().getResource(tempString));
+        clipC = AudioSystem.getClip();
+        clipC.open(audioC);
     }
     
     public void collectImage()
@@ -71,8 +112,8 @@ public class Player {
         left_img = i.getImage();
         i = new ImageIcon(this.getClass().getResource("images/"+ Survival.player_name + "/right.png"));
         right_img = i.getImage();
-        
     }
+    
     
     public void imgRefresh()
     {
@@ -158,6 +199,7 @@ public class Player {
             if(((Weapon)shots.get(i)) instanceof Melee)
                 return;
         }
+        
         shots.add(new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right));
     }
     

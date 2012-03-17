@@ -66,7 +66,6 @@ public class Melee extends Weapon
         
         super(realX, realY, "images/" + Survival.player_name + "/melee.png",
                 up, down, left, right);
-        System.out.println(Math.random()+"");
         blockable=false;
         finalRotation = 180;
         currentRotation = 0;
