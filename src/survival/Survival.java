@@ -18,7 +18,7 @@ public class Survival extends JPanel implements ActionListener {
     
     JFrame choiceFrame;
     static JFrame mainFrame;
-    JButton christina, stephen, garrett, kai;
+    JButton christina, stephen, garrett, kai, yena;
     
     public static String player_name;       //choosen player, accessible by all classes
     
@@ -46,22 +46,26 @@ public class Survival extends JPanel implements ActionListener {
     {
         choiceFrame = new JFrame("Welcome to Survival v01");
         choiceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        choiceFrame.setSize(600, 600);
+        choiceFrame.setSize(600, 800);
         
         christina = new JButton("Christina the Dark Witch", 
-                new ImageIcon(this.getClass().getResource(("images/christina/button.png"))));
+                new ImageIcon(this.getClass().getResource(("images/christina/down.png"))));
         stephen = new JButton("Stephen the Elven Warior of Justice", 
-                new ImageIcon(this.getClass().getResource(("images/stephen/button.png"))));
+                new ImageIcon(this.getClass().getResource(("images/stephen/down.png"))));
         garrett = new JButton("Garrett the Rogue Barbarian", 
                 new ImageIcon(this.getClass().getResource(("images/garrett/down.png"))));
-        kai = new JButton("Kai the Troll", 
-                new ImageIcon(this.getClass().getResource(("images/kai/button.png"))));
+        kai = new JButton("Kai the Troll                                     ", 
+                new ImageIcon(this.getClass().getResource(("images/kai/down.png"))));
+        yena = new JButton("Yennie the Trapster               ",
+                new ImageIcon(this.getClass().getResource(("images/yena/down.png"))));
         
         choiceFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
         choiceFrame.getContentPane().add(christina);
         choiceFrame.getContentPane().add(stephen);
         choiceFrame.getContentPane().add(garrett);
-        //choiceFrame.getContentPane().add(kai);
+        choiceFrame.getContentPane().add(kai);
+        choiceFrame.getContentPane().add(yena);
+        
         
         choiceFrame.getContentPane().add(new JLabel("All revenue generated will go straight to penguin fund"));
         
@@ -69,6 +73,7 @@ public class Survival extends JPanel implements ActionListener {
         kai.addActionListener(this);
         garrett.addActionListener(this);
         stephen.addActionListener(this);
+        yena.addActionListener(this);
         
         choiceFrame.setVisible(true);
         
@@ -103,6 +108,10 @@ public class Survival extends JPanel implements ActionListener {
         else if(e.getSource() == garrett)
         {
             player_name = "garrett";
+        }
+        else if(e.getSource() == yena)
+        {
+            player_name = "yena";
         }
         
         choiceFrame.setVisible(false);

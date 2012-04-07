@@ -13,6 +13,7 @@ import javax.sound.sampled.Clip;
 public class Christina extends Player
 {
     String img_filename = "shot.png";
+    
     public Christina()
     {
         super();
@@ -142,9 +143,6 @@ public class Christina extends Player
 
             af.translate(0,-shot_speed);
         }
-        
-        
-                
     }
     
     

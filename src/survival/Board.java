@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import survival.Yena.Bomb;
+import survival.Yena.BombExplosion;
 
 
 public class Board extends JPanel implements ActionListener
@@ -64,6 +66,10 @@ public class Board extends JPanel implements ActionListener
         {p1=new Christina();}
         else if(Survival.player_name == "kai")
         {p1=new Kai();}
+        else if(Survival.player_name == "yena")
+        {p1=new Yena();}
+        //else if(Survival.player_name == "ek")
+        //{p1=new EK();}
         
         
         new MapBlock();         //initializes map blocks
@@ -85,6 +91,7 @@ public class Board extends JPanel implements ActionListener
             itemDetection();    //see if collect items
             spawn();            //spawn enemy
             spawnItems();       //spawn items
+            ninjaPlayer();      //takes care of ninja
             
             p1.imgRefresh();    //refreshes player image
             repaint();
@@ -95,6 +102,18 @@ public class Board extends JPanel implements ActionListener
             time.stop();
         }
         
+    }
+    
+    public void ninjaPlayer()
+    {
+        if(p1.ninja)
+        {
+            if(Board.timeSec-p1.lastShot >= p1.attackDelay)
+            {
+                p1.ninja = false;
+                p1.collectImage();                        
+            }
+        }
     }
     
     public void spawnItems()
@@ -149,7 +168,10 @@ public class Board extends JPanel implements ActionListener
                     p1.hit();
                 }
                 else
-                    ((Enemy) enemyList.get(i)).moveEnemy();
+                {
+                    if(!p1.ninja)
+                        ((Enemy) enemyList.get(i)).moveEnemy();
+                }
             }
         }
     }
@@ -251,7 +273,19 @@ public class Board extends JPanel implements ActionListener
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         
+        
         g2d.drawImage(map, -boardX, -boardY, null, null);
+        
+        Bomb tempBomb;
+        for(int i=p1.playerItem.size()-1; i>=0; i--)
+        {//displays player item, mostly for yena bomb
+            if(p1.playerItem.get(i) instanceof Bomb)
+            {
+                tempBomb = (Bomb) p1.playerItem.get(i);
+                g2d.drawImage(tempBomb.getImage(), tempBomb.getX(), tempBomb.getY(), null, null);
+                g2d.drawString(tempBomb.getTime(), tempBomb.getX(), tempBomb.getY());
+            }            
+        }
         
         //draw character
         g2d.drawImage(p1.player_img, p1.x, p1.y, null);
@@ -283,12 +317,17 @@ public class Board extends JPanel implements ActionListener
             tempWeapon = (Weapon) p1.shots.get(i);
             g2d.drawImage(tempWeapon.getImage(), tempWeapon.af, null);
         }
-        
+
         for(int i=enemyShots.size()-1; i>=0; i--)
         {//enemy weapon
             tempWeapon = (Weapon) enemyShots.get(i);
             g2d.drawImage(tempWeapon.getImage(), tempWeapon.af, null);
         }
+        
+        
+        
+        
+        
         
         
         //hp
@@ -443,6 +482,14 @@ public class Board extends JPanel implements ActionListener
         
         boardX+=dx;
         boardY+=dy;
+        
+        for(int i=0; i<p1.shots.size(); i++)
+        {
+            if(i<p1.shots.size() && p1.shots.get(i) instanceof Shot)
+            {
+                ((Shot) p1.shots.get(i)).directionAdjust();
+            }
+        }
     }
     
     
@@ -454,6 +501,13 @@ public class Board extends JPanel implements ActionListener
         {
             int key = e.getKeyCode();
             //key stroke for p1
+            
+            if (key == KeyEvent.VK_0)   //dev mode cheat
+            {
+                p1.hp = 100;
+                p1.special = p1.specialMax;
+            }
+            
             
             if (key == KeyEvent.VK_Z)
             {

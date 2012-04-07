@@ -82,7 +82,6 @@ public class Stephen extends Player
         Survival.clip.stop();
         clipC.setFramePosition(0);
         clipC.loop(0);
-        
     }
     
     

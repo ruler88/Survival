@@ -9,6 +9,8 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.*;
@@ -37,11 +39,11 @@ public class Player {
     Image left_img;
     Image right_img;
     
-    ArrayList shots = new ArrayList();
+    List shots = Collections.synchronizedList(new ArrayList());
     double attackDelay;
     double lastShot = 0;       //sec of last shot
     int special = 0;         //special skill meter
-    int specialMax = 2;
+    int specialMax = 6;
     
     AudioInputStream audioZ;
     AudioInputStream audioX;
@@ -50,6 +52,9 @@ public class Player {
     Clip clipX;
     Clip clipC;
     
+    boolean ninja = false;      //if ninja = true then enemy cannot see
+    
+    ArrayList playerItem = new ArrayList();
     
     
     public Player()
@@ -371,7 +376,10 @@ public class Player {
         {
             //move melee weapon with player
             if(shots.get(a) instanceof Melee)
-                ((Melee)shots.get(a)).playerMove();
+            {
+                ((Melee)shots.get(a)).playerMove();                
+            }
+            
         }
         
         

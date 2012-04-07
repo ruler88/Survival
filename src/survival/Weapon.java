@@ -29,6 +29,9 @@ public class Weapon
     Area areaShape;
     AffineTransform af;
     
+    double xscale=1;     //image scale, if applicable
+    double yscale=1;
+            
     public Weapon(int realX, int realY, String img_name, boolean up, boolean down, boolean left, boolean right)
     {        
         playerCenterX = realX;
@@ -64,6 +67,9 @@ public class Weapon
         af.scale(xscale, yscale);
         
         directionAdjustHelper();
+        
+        this.xscale = xscale;
+        this.yscale = yscale;
         
     }
     

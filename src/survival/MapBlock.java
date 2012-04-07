@@ -24,12 +24,14 @@ public class MapBlock
     public void addBlocks()
     {
         //add blocks here
-        
-        allBlocks.add(new Block("images/map_block1.png", 700, 600));
+        /*
+        allBlocks.add(new Block("images/map_block1.png", 700, 1100));
         allBlocks.add(new Block("images/map_block1.png", 100, 5));
         allBlocks.add(new Block("images/map_block1.png", 10, 2200));
-        allBlocks.add(new Block("images/map_block1.png", 250, 2200));
+        allBlocks.add(new Block("images/map_block1.png", 1000, 2200));
         allBlocks.add(new Block("images/map_block1.png", 2000, 1000));
+        * 
+        */
     }
     
 }
