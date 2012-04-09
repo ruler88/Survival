@@ -17,7 +17,7 @@ import javax.sound.sampled.*;
 import javax.swing.ImageIcon;
 
 
-public class Player {
+public abstract class Player {
     
     boolean up;         //facing 
     boolean down;
@@ -141,9 +141,8 @@ public class Player {
         }
     }
     
-    public void specialAttack()
-    {   //for implementation
-    }
+    abstract public void specialAttack();//for implementation
+    
     
     public void triRangeShotHelper()
     {   //shoots three shots

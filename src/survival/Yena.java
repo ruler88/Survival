@@ -4,9 +4,13 @@
  */
 package survival;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.*;
 
 
 public class Yena extends Player implements Runnable
@@ -45,6 +49,92 @@ public class Yena extends Player implements Runnable
     }
     
     
+    public void melee()
+    {
+        for(int i = 0; i<shots.size(); i++)
+        {   //make melee object unique
+            if(((Weapon)shots.get(i)) instanceof Melee)
+                return;
+        }
+        Melee tempMelee;
+        if(score < Board.level)
+            tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 60, 5);
+        else if(score < Board.level2)
+            tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 70, 5, 1.2, 1.2);
+        else
+            tempMelee = new Melee(getRealCenterX(), getRealCenterY(), up, down, left, right, 80, 5, 1.4, 1.4);
+        
+        clipZ.setFramePosition(0);
+        clipZ.loop(0);
+        shots.add(tempMelee);
+    }
+    
+    
+    public void specialAttack()
+    {
+        int dist = 250;     //distance from center
+        shots.add(new SpecialWeapon(this.getRealCenterX()+dist+210, this.getRealCenterY()+dist+80, 
+                true));
+        shots.add(new SpecialWeapon(this.getRealCenterX()-dist-300, this.getRealCenterY()-dist+30, 
+                false));
+
+        if (clipC.isRunning())
+            clipC.stop();
+        Survival.clip.stop();
+        clipC.setFramePosition(0);
+        clipC.loop(0);
+    }
+    
+    private class SpecialWeapon extends Weapon
+    {
+        private double startTime;
+        double attackDelay = 1.4;
+        double lastShot = 0;       //sec of last shot
+        double stationX;
+        double stationY;
+        boolean leftDirection;
+        
+        public SpecialWeapon(int realX, int realY, boolean leftDirection)
+        {
+            super(realX, realY, "images/" + Survival.player_name + "/kierkegaard.png",
+                true, false, false, false);
+            
+            startTime = Board.timeSec;
+            stationX = getX();
+            stationY = getY();
+            
+            this.leftDirection = leftDirection;
+            
+            directionAdjust();
+        }
+        
+        public void move()
+        {
+            //adjust photo direction
+            directionAdjust();
+            //do shoot attack here
+            if(Board.timeSec - startTime <= 12)
+            {
+                if(Board.timeSec - lastShot >= attackDelay)
+                {
+                    lastShot = Board.timeSec;
+                    
+                    if(leftDirection)
+                        shots.add(new Shot(realX, realY+175, false, false, true, false, "philosophical_left.png", false));
+                    else
+                        shots.add(new Shot(realX, realY+175, false, false, false, true, "philosophical_right.png", false));
+                }
+            }
+            
+            else
+            {
+                end = true;
+                Survival.clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+        }
+    }
+    
+    
     
     
 
@@ -72,11 +162,34 @@ public class Yena extends Player implements Runnable
         //add explosion
         BombExplosion tempExplosion = new BombExplosion(
         tempBomb.realX, tempBomb.realY, "explosion.png");
-
         playerItem.remove(tempBomb);
         shots.add(tempExplosion);
+        
+        //sound section, don't worry too much about the try catch statements!! :(
+        AudioInputStream audioBoom;
+        Clip clipBoom;
+        String tempString = "sounds/"+Survival.player_name+"/boom.wav";
+        
+        
+        try {
+            audioBoom = AudioSystem.getAudioInputStream(this.getClass().getResource(tempString));
             
-                
+            clipBoom = AudioSystem.getClip();
+            clipBoom.open(audioBoom);
+            
+            clipBoom.setFramePosition(0);
+            clipBoom.loop(0);
+            
+        } catch (UnsupportedAudioFileException ex) {
+            Logger.getLogger(Yena.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(Yena.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Yena.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
     }
     
     
@@ -125,8 +238,7 @@ public class Yena extends Player implements Runnable
             this.yscale = yscale;
 
         }
-        
-        
+                       
     }
     
     public class Bomb extends Block

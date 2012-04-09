@@ -523,7 +523,10 @@ public class Board extends JPanel implements ActionListener
             
             if(key == KeyEvent.VK_C)
             {
-                p1.specialAttack();
+                if(p1.special>=p1.specialMax){
+                    p1.specialAttack();
+                    p1.special=0;
+                }
                 return;
             }
             
