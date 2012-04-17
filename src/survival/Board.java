@@ -11,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import survival.Yena.Bomb;
@@ -75,6 +77,8 @@ public class Board extends JPanel implements ActionListener
         new MapBlock();         //initializes map blocks
         spawn();
         
+        
+        
     }
     
     @Override
@@ -106,8 +110,7 @@ public class Board extends JPanel implements ActionListener
     
     public void ninjaPlayer()
     {
-        if(p1.ninja)
-        {
+        if(p1.ninja) {
             if(Board.timeSec-p1.lastShot >= p1.attackDelay)
             {
                 p1.ninja = false;
@@ -326,10 +329,6 @@ public class Board extends JPanel implements ActionListener
         
         
         
-        
-        
-        
-        
         //hp
         g2d.setColor(Color.red);
         g2d.fillRect(1100,15,p1.hp, 25);
@@ -529,6 +528,7 @@ public class Board extends JPanel implements ActionListener
                 }
                 return;
             }
+            
             
             //direction only
             pressedDir.add(key);

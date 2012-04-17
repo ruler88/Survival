@@ -149,15 +149,6 @@ public class Stephen extends Player
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     //override implementation
     public void triRangeShotHelper()
     {   //shoots three shots

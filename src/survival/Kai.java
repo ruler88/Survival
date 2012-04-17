@@ -83,6 +83,7 @@ public class Kai extends Player implements Runnable
             try {Thread.sleep( (int)(1000*penguinDelay));} 
             catch (InterruptedException ex) {}
         }
+        Survival.clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     
     

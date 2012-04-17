@@ -1,7 +1,6 @@
 
 package survival;
 
-
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,9 +15,9 @@ import javax.swing.*;
  */
 public class Survival extends JPanel implements ActionListener {
     
-    JFrame choiceFrame;
+    static JFrame choiceFrame;
     static JFrame mainFrame;
-    JButton christina, stephen, garrett, kai, yena;
+    static JButton christina, stephen, garrett, kai, yena;
     
     public static String player_name;       //choosen player, accessible by all classes
     
@@ -46,7 +45,7 @@ public class Survival extends JPanel implements ActionListener {
     {
         choiceFrame = new JFrame("Welcome to Survival v01");
         choiceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        choiceFrame.setSize(600, 800);
+        choiceFrame.setSize(500, 800);
         
         christina = new JButton("Christina the Dark Witch", 
                 new ImageIcon(this.getClass().getResource(("images/christina/down.png"))));
@@ -54,9 +53,9 @@ public class Survival extends JPanel implements ActionListener {
                 new ImageIcon(this.getClass().getResource(("images/stephen/down.png"))));
         garrett = new JButton("Garrett the Rogue Barbarian", 
                 new ImageIcon(this.getClass().getResource(("images/garrett/down.png"))));
-        kai = new JButton("Kai the Troll                                     ", 
+        kai = new JButton("Kai the Troll (SRSLY don't pick me)", 
                 new ImageIcon(this.getClass().getResource(("images/kai/down.png"))));
-        yena = new JButton("Yennie the Trapster               ",
+        yena = new JButton("Yennie the Trapster",
                 new ImageIcon(this.getClass().getResource(("images/yena/down.png"))));
         
         choiceFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -66,9 +65,7 @@ public class Survival extends JPanel implements ActionListener {
         choiceFrame.getContentPane().add(kai);
         choiceFrame.getContentPane().add(yena);
         
-        
-        choiceFrame.getContentPane().add(new JLabel("All revenue generated will go straight to penguin fund"));
-        
+        choiceFrame.getContentPane().add(new JLabel("INSTRUCTIONS: Press Z, X, C and arrow key"));
         christina.addActionListener(this);
         kai.addActionListener(this);
         garrett.addActionListener(this);
@@ -76,7 +73,6 @@ public class Survival extends JPanel implements ActionListener {
         yena.addActionListener(this);
         
         choiceFrame.setVisible(true);
-        
     }
     
     public void setMain()
@@ -84,11 +80,9 @@ public class Survival extends JPanel implements ActionListener {
         mainFrame = new JFrame("Survival");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(1280, 860);
-        
-        
-        mainFrame.add(new Board());  
+                
+        mainFrame.add(new Board());
         mainFrame.setVisible(true);
-        
     }
     
     @Override
@@ -115,7 +109,6 @@ public class Survival extends JPanel implements ActionListener {
         }
         
         choiceFrame.setVisible(false);
-        choiceFrame.dispose();
         setMain();
     }
 }

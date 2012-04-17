@@ -31,9 +31,6 @@ public class Yena extends Player implements Runnable
         boomTime = 0.26;
     }
     
-    
-    
-    
     public void shoot()
     {
         if(Board.timeSec-lastShot >= attackDelay || attackDelay ==0)
